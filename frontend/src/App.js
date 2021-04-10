@@ -1,9 +1,9 @@
-import './App.css';
-import {Route, Router} from "react-router-dom";
+import React from "react";
+import {Router} from "react-router-dom";
 import {history} from "./services/history";
-import {loginAutomatically, UserContext} from "./services/user";
+import {loginAutomatically} from "./services/user";
 import {Routing} from "./Routing";
-import React, {useMemo, useState} from "react";
+import './App.css';
 
 if (loginAutomatically()) {
     history.push('/')
