@@ -1,15 +1,12 @@
-import React, {useContext, useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {NotLogged} from "../../views/NotLogged";
 import {Logged} from "../../views/Logged";
 import {Post} from "./Post/Post";
 import {API} from "../../services/api";
 import {List} from "antd";
 import './layout.css'
-import {UserContext} from "../../services/UserContext";
 
 export const Home = () => {
-
-    const {user, setUser} = useContext(UserContext);
 
     const postsAmount = 10;
     const [postsRequest, setPostsRequest] = useState({
@@ -30,11 +27,7 @@ export const Home = () => {
         API.get(`/post/last/${postsAmount}/${postsRequest.postsLoaded}`)
             .then((response) => {
                 const loading = response.data === [];
-
-                // console.log(response.data)
-                // console.log(loading)
                 if (loading === false) {
-                    // console.log("inside")
                     let newPosts = postsRequest.posts
                     Array.prototype.push.apply(newPosts, response.data)
                     setPostsRequest({
@@ -56,9 +49,6 @@ export const Home = () => {
     const content = () => {
         return (
             <div>
-                {JSON.stringify(user)}
-                <button onClick={() => setUser('hey')}> ustaw dane</button>
-                {/*{JSON.stringify(user)}*/}
                 <div className="post-list">
                     {
                         <List

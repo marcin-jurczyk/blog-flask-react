@@ -1,19 +1,13 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {Menu} from "antd";
 import {Link, useHistory} from "react-router-dom";
 import {logout} from "../../services/user";
 import {HomeOutlined} from "@ant-design/icons"
-
 import './layout.css'
-import SubMenu from "antd/es/menu/SubMenu";
-import {UserContext} from "../../services/UserContext";
 
 
 export const NavBarLogged = () => {
     const history = useHistory();
-
-    const { user , setUser} = useContext(UserContext)
-
 
     const handleLogout = () => {
         logout();
@@ -31,14 +25,6 @@ export const NavBarLogged = () => {
         )
     };
 
-    const userName = () => {
-        let u = user
-        if (u)
-            return u.username
-        else
-            return "NIE ZNALEZIONO USERA"
-    }
-
     return (
         <Menu
             className="menu"
@@ -52,19 +38,9 @@ export const NavBarLogged = () => {
                 <Link to="add_post">Add post</Link>
             </Menu.Item>
             <Menu.Item onClick={() => handleLogout()} className={"logout"}>
-                {getAvatar()}Logout
+                {/*{getAvatar()}*/}
+                Logout
             </Menu.Item>
-            <SubMenu title={userName()} style={{float: 'right'}}>
-                <Menu.Item onClick={() => handleLogout()}>
-                    Logout
-                </Menu.Item>
-                <Menu.Item onClick={() => history.push("/changeUsername")}>
-                    Change username
-                </Menu.Item>
-                <Menu.Item onClick={() => history.push("/changePassword")}>
-                    Change password
-                </Menu.Item>
-            </SubMenu>
         </Menu>
     );
 };

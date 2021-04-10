@@ -17,6 +17,8 @@
 }
 
 .sign-up-form-button {
+    display: grid;
+    place-items: center;
     width: 50%;
 }
 

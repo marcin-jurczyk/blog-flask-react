@@ -1,7 +1,6 @@
-import React, {useContext} from 'react'
+import React from 'react'
 import {Button, Form, Input, message} from "antd";
 import {LockOutlined, MailOutlined} from '@ant-design/icons';
-import {UserContext} from "../../../services/UserContext";
 import {API} from "../../../services/api";
 import {Link} from "react-router-dom";
 import {useHistory} from "react-router-dom";
@@ -14,8 +13,6 @@ import "./layout.css"
 export const Login = () => {
     const history = useHistory();
 
-    const { user , setUser} = useContext(UserContext)
-
     const onFinish = values => {
         API.post('/auth/login', {
             email: values.email,
@@ -23,10 +20,9 @@ export const Login = () => {
         })
             .then((response => {
                 login(response.data['Bearer token']);
-
                 API.get(`/auth/email/${values.email}`)
                     .then(response => {
-                        setUser(response.data)
+                        localStorage.setItem("user", response.data)
                         history.push('/home')
                     }).catch((errInfo) => {
                     message.error(errInfo);
