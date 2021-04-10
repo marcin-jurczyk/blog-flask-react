@@ -4,7 +4,7 @@ import {LockOutlined, MailOutlined} from '@ant-design/icons';
 import {API} from "../../../services/api";
 import {Link} from "react-router-dom";
 import {useHistory} from "react-router-dom";
-import {login} from "../../../services/user";
+import {login, setUser} from "../../../services/user";
 import {NotLogged} from "../../../views/NotLogged";
 
 
@@ -21,8 +21,8 @@ export const Login = () => {
             .then((response => {
                 login(response.data['Bearer token']);
                 API.get(`/auth/email/${values.email}`)
-                    .then(response => {
-                        localStorage.setItem("user", response.data)
+                    .then(_response => {
+                        setUser(_response.data)
                         history.push('/home')
                     }).catch((errInfo) => {
                     message.error(errInfo);

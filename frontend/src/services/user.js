@@ -17,13 +17,18 @@ export const loginAutomatically = () => {
     return false;
 };
 
-export const login = (token, avatar) => {
+export const login = (token) => {
     localStorage.setItem('token', token);
     setAuthHeaders(token);
 };
 
+export const setUser = (user) => {
+    localStorage.setItem('user', JSON.stringify(user));
+};
+
 export const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setAuthHeaders(null);
     window.location.reload();
 };

@@ -4,7 +4,6 @@ import {NavBarLogged} from "../components/NavBar/NavBarLogged";
 
 import './layout.css'
 
-
 const {Header, Content, Footer} = Layout
 
 export const Logged = ({children}) => {

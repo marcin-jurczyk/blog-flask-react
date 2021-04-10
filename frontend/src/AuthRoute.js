@@ -11,6 +11,7 @@ export const AuthRoute = ({children, ...rest}) => {
     const now = Date.now() / 1000;
     if (decoded.exp <= now) {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         return <Redirect to={`/`}/>;
     }
     return <Route {...rest}>{children}</Route>
