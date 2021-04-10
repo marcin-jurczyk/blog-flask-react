@@ -1,0 +1,78 @@
+.post {
+    background: #dbd8d8;
+    border-radius: 20px;
+    height: 180px;
+    padding: 20px;
+    margin: 1% 3%;
+    min-margin: 10px 20px;
+    display: flex;
+
+    -webkit-box-shadow: 5px 5px 5px #ccc;
+    -moz-box-shadow:    5px 5px 5px #ccc;
+    box-shadow:         5px 5px 5px #ccc;
+
+    /* HOVER OFF */
+    transition: all .6s ease;
+    -webkit-transition: all .6s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.post:hover {
+    /*margin: 1% 2.5%;*/
+    transform: scale(1.02);
+
+    transition: all .6s ease;
+    -webkit-transition: all .6s ease;
+}
+
+.date{
+    /*background: greenyellow;*/
+    display: inline-block;
+    float: left;
+    overflow: hidden;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.date__day{
+    line-height: 1;
+    display: block;
+    font-size: 4.333rem;
+    color: #ff7eb2;
+    height: 70px;
+}
+
+.date__month_year{
+    display: block;
+    font-size: 1rem;
+    margin-top: 5px;
+}
+
+.date__hours {
+    display: block;
+    font-size: 1rem;
+    margin-top: 5px;
+    font-weight: normal;
+}
+
+.post_content {
+    /*background: rebeccapurple;*/
+    flex: 1;
+    overflow: hidden;
+    width: 1500px;
+    margin-left: 3%;
+}
+
+.post_title {
+    font-size: 30px;
+    font-weight: bold;
+    display: block;
+    height: 70px;
+    /*margin: auto;*/
+}
+
+.post_body {
+    display: block;
+}
