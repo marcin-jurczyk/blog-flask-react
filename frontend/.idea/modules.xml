@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/frontend.iml" filepath="$PROJECT_DIR$/.idea/frontend.iml" />
+      <module fileurl="file://$USER_HOME$/OneDrive/Semestr 6/Internet Engineering/Projekt/SpringTicTacToe/react/.idea/react.iml" filepath="$USER_HOME$/OneDrive/Semestr 6/Internet Engineering/Projekt/SpringTicTacToe/react/.idea/react.iml" />
     </modules>
   </component>
 </project>

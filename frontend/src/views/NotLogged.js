@@ -14,7 +14,6 @@ export const NotLogged = ({children}) => {
                 <NavBarNotLogged/>
             </Header>
             <Layout>
-                <div className="bg"/>
                 <Content className="content" >
                     {children}
                 </Content>

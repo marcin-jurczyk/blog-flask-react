@@ -1,6 +1,16 @@
+import {createContext} from 'react'
 import {API, setAuthHeaders} from "./api";
 import jwt_decode from 'jwt-decode'
 import {message} from "antd";
+
+export const UserContext = createContext(null);
+
+export const userModel = {
+    email: null,
+    username: null,
+    createdAt: null,
+    avatar_url: null
+}
 
 export const loginAutomatically = () => {
     const token = localStorage.getItem('token');
@@ -28,7 +38,7 @@ export const setUser = (user) => {
 
 export const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    // localStorage.removeItem('user');
     setAuthHeaders(null);
     window.location.reload();
 };
@@ -36,7 +46,6 @@ export const logout = () => {
 export const getUserInfo = (email) => {
     API.get(`/auth/email/${email}`)
         .then(response => {
-            console.log(response.data)
             return response.data;
     }).catch((errInfo) => {
         message.error(errInfo);

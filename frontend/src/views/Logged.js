@@ -9,12 +9,11 @@ const {Header, Content, Footer} = Layout
 export const Logged = ({children}) => {
 
     return (
-        <Layout style={{ minHeight:"100vh" }} >
+        <Layout style={{ minHeight:"100vh"}}>
             <Header className="header">
                 <NavBarLogged/>
             </Header>
             <Layout>
-                <div className="bg"/>
                 <Content className="content" >
                     {children}
                 </Content>

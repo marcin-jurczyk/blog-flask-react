@@ -1,5 +1,8 @@
+@import '~antd/dist/antd.css';
+
 .header {
     background: #fff;
+    overflow: auto;
     position:fixed;
     width:100%;
     left:0;
