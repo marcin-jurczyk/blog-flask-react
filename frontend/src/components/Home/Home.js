@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {NotLogged} from "../../views/NotLogged";
 import {Logged} from "../../views/Logged";
-import {Post} from "./Post/Post";
+import {PostShort} from "./PostShort/PostShort";
 import {API} from "../../services/api";
-import {List} from "antd";
+import {List, Spin} from "antd";
 import './layout.css'
 
 export const Home = () => {
@@ -13,30 +13,36 @@ export const Home = () => {
         postsLoaded: 0,
         posts: []
     });
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(0);
+    const [loading, setLoading] = useState(true);
     const loader = useRef(null);
 
     useEffect(() => {
-        const observer = new IntersectionObserver(handleObserver);
+        const observer = new IntersectionObserver(handleObserver, {threshold: 0});
         if (loader.current) {
             observer.observe(loader.current)
         }
     }, []);
 
     useEffect(() => {
-        API.get(`/post/last/${postsAmount}/${postsRequest.postsLoaded}`)
-            .then((response) => {
-                const loading = response.data === [];
-                if (loading === false) {
-                    let newPosts = postsRequest.posts
-                    Array.prototype.push.apply(newPosts, response.data)
-                    setPostsRequest({
-                        postsLoaded: postsRequest.postsLoaded + Object.keys(response.data).length,
-                        posts: newPosts,
-                    })
-                }
-            })
-            .catch(errInfo => console.error(errInfo))
+        if (page !== 0) {
+            API.get(`/post/last/${postsAmount}/${postsRequest.postsLoaded}`)
+                .then((response) => {
+                    if (Object.keys(response.data).length === 0) {
+                        setLoading(false)
+                    }
+                    if (loading === true) {
+                        let newPosts = postsRequest.posts
+                        Array.prototype.push.apply(newPosts, response.data);
+                        setPostsRequest({
+                            postsLoaded: postsRequest.postsLoaded + Object.keys(response.data).length,
+                            posts: newPosts,
+                        })
+                    }
+                    // console.log("page: " + page + "\t\tloading: " + loading + "\t\tresponse: " + Object.keys(response.data).length)
+                })
+                .catch(errInfo => console.error(errInfo))
+        }
     }, [page])
 
     const handleObserver = (entities) => {
@@ -50,29 +56,29 @@ export const Home = () => {
         return (
             <div>
                 <div className="post-list">
-                    {
-                        <List
-                            dataSource={postsRequest.posts}
-                            renderItem={post => (
-                                <Post
-                                    title={post.title}
-                                    date={post.createdAt.$date}
-                                    body={post.body}
-                                    author={post.author}
-                                />
-                            )}
-                        />
-                    }
-                    {/*{loading === true &&*/}
+
+                    <List
+                        dataSource={postsRequest.posts}
+                        locale={{emptyText: "Loading data..."}}
+                        renderItem={post => (
+                            <PostShort
+                                id={post._id}
+                                title={post.title}
+                                date={post.createdAt.$date}
+                                body={post.body}
+                                author={post.author_info}
+                                comments={post.comments}
+                                type={"home"}
+                            />
+                        )}
+                    />
+                    {loading === true ?
                     <div className="loading" ref={loader}>
-                        <div className="lds-ellipsis">
-                            <div/>
-                            <div/>
-                            <div/>
-                            <div/>
-                        </div>
+                        <Spin size="large" className="loader-antd"/>
                     </div>
-                    {/*}*/}
+                        :
+                        <div className="loading"> ALL POSTS </div>
+                    }
                 </div>
             </div>
         )
@@ -92,92 +98,3 @@ export const Home = () => {
         )
     }
 };
-
-// export const Home = () => {
-//
-//     // const [posts, setPosts] = useState([{
-//     //     _id: {$oid: "000"},
-//     //     title: 'Template title',
-//     //     body: 'Template body',
-//     //     author: {$oid: "000"},
-//     //     comments: [],
-//     //     createdAt: {$date: "000"},
-//     //     modified: false,
-//     //     lastModifyAt: {$date: "000"},
-//     // }])
-//
-//     const amountOfLoadedPosts = 10;
-//     const [alreadyLoaded, setAlreadyLoaded] = useState(0)
-//     const [posts, setPosts] = useState([])
-//
-//     useEffect(() => {
-//         API.get(`/post/last/${amountOfLoadedPosts}/${alreadyLoaded}`)
-//             .then((response) => {
-//                 let newPosts = posts
-//                 Array.prototype.push.apply(newPosts, response.data)
-//                 console.log(newPosts)
-//                 setPosts(newPosts)
-//             })
-//             .catch(errInfo => console.error(errInfo))
-//     }, [alreadyLoaded]);
-//
-//     function loadMore() {
-//         setAlreadyLoaded(alreadyLoaded + amountOfLoadedPosts)
-//     }
-//
-//     if (posts === undefined || posts === [] || posts === null){
-//         return (
-//             <NotLogged/>
-//         )
-//     }
-//     else {
-//         return (
-//             <NotLogged>
-//                 <div>
-//                     <InfiniteScroll
-//                         pageStart={0}
-//                         loadMore={loadMore}
-//                         hasMore={true}
-//                         loader={<div className="loader" key={0}>Loading ...</div>}
-//                         useWindow={false}
-//                     >
-//                         <List
-//                             dataSource={posts}
-//                             renderItem={post => (
-//                                     <Post
-//                                         title={post.title}
-//                                         date={post.createdAt.$date}
-//                                         body={post.body}
-//                                     />
-//                                     )}
-//                         />
-//                     </InfiniteScroll>
-//                 </div>
-//
-//                 {/*<button onClick={loadMore} > </button>*/}
-//
-//             </NotLogged>
-//         );
-//     }
-// };
-
-// const [posts, setPosts] = useState([{
-//     _id: {$oid: "000"},
-//     title: 'Template title',
-//     body: 'Template body',
-//     author: {$oid: "000"},
-//     comments: [],
-//     createdAt: {$date: "000"},
-//     modified: false,
-//     lastModifyAt: {$date: "000"},
-// }])
-
-// useEffect(() => {
-//     API.get("/post/all")
-//         .then((response) => {
-//             const sorted = response.data.sort((a, b) => b.createdAt.$date - a.createdAt.$date)
-//             setPosts(sorted)
-//         })
-//         .catch(errInfo => console.error(errInfo))
-// }, []);
-// console.log(posts)

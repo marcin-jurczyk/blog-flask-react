@@ -13,7 +13,7 @@ export const Logged = ({children}) => {
             <Header className="header">
                 <NavBarLogged/>
             </Header>
-            <Layout>
+            <Layout className="layout-content">
                 <Content className="content" >
                     {children}
                 </Content>

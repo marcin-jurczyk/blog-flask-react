@@ -1,10 +1,13 @@
 from datetime import datetime
+from mongoengine import EmbeddedDocument
+from model.user import User
 from app import db
 
 
-class Comment(db.Document):
+class Comment(EmbeddedDocument):
     """Comment object embedded in Post collection"""
-    body = db.StringFiled(required=True)
+    body = db.StringField(required=True)
+    user = db.ReferenceField(User)
     createAt = db.DateTimeField(default=datetime.utcnow)
     modified = db.BooleanField(default=False)
     lastModifiedAt = db.DateTimeField(default=datetime.utcnow)

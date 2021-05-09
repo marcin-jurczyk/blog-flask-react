@@ -1,7 +1,8 @@
-import {createContext} from 'react'
+import React, {createContext} from 'react'
 import {API, setAuthHeaders} from "./api";
 import jwt_decode from 'jwt-decode'
-import {message} from "antd";
+import {Image, message} from "antd";
+import Avatar from "antd/es/avatar/avatar";
 
 export const UserContext = createContext(null);
 
@@ -38,9 +39,8 @@ export const setUser = (user) => {
 
 export const logout = () => {
     localStorage.removeItem('token');
-    // localStorage.removeItem('user');
     setAuthHeaders(null);
-    window.location.reload();
+    // window.location.reload();
 };
 
 export const getUserInfo = (email) => {
@@ -60,3 +60,50 @@ export const getEmail = () => {
     const base64 = base64Url.replace('-', '+').replace('_', '/');
     return JSON.parse(window.atob(base64)).sub;
 };
+
+export const displayGrvatar = (url, size=30, border=0, br=size/2) => {
+    let url_size = url
+    if (url != null) {
+        if (size >= 100) {
+            url_size = url.replace(/s=100/, `s=${size}`)
+        }
+        return (
+            <Avatar
+                src={
+                    <Image
+                        src={url_size}
+                        preview={false}
+                        fallback={"load failed!"}
+                    /> }
+                shape={"circle"}
+                size={size}
+            />
+            // <img src={url_size} alt="avatar" className="avatar" style={{
+            //     borderRadius: br,
+            //     borderColor: "#000",
+            //     width: size,
+            //     height: sizes
+            // }}/>
+        )
+    }
+}
+
+export const textColorFromImage = (text, url) => {
+    const color = require("img-color")
+    const col = color.getDominantColor(url)
+    console.log(col)
+        // .then(response => {
+        //     console.log("Color: ")
+        //     console.log(response)
+        // })
+        // .catch(err => console.error(err));
+    // return (
+    //     <Palette image={url}>
+    //         {(palette) => (
+    //             <div style={{color: palette.vibrant}}>
+    //                 {text}
+    //             </div>
+    //         )}
+    //     </Palette>
+    // )
+}

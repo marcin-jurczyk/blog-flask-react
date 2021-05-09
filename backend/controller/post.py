@@ -1,8 +1,9 @@
+from bson import json_util
 from flask import Blueprint, request
 from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required
 
-from service.service import *
+from service.post import *
 
 post = Blueprint('post', __name__)
 
@@ -17,6 +18,7 @@ def credentials(response):
 
 @post.route('/new', methods=['POST'])
 @jwt_required()
+@cross_origin()
 def new_post():
     data = request.get_json()
     title = data['title']
@@ -24,10 +26,43 @@ def new_post():
     return add_new_post(title, body)
 
 
-@post.route('/user-posts/<username>', methods=['GET'])
+@post.route('/get', methods=['GET'])
 @jwt_required()
+@cross_origin()
+def get_post():
+    data = request.get_json()
+    post_id = data['post_id']
+    return get_post_service(post_id)
+
+
+@post.route('/edit', methods=['PUT'])
+@jwt_required()
+@cross_origin()
+def edit_post():
+    data = request.get_json()
+    post_id = data['post_id']
+    title = data['title']
+    body = data['body']
+    return edit_post_service(post_id, title, body)
+
+
+@post.route('/delete', methods=['DELETE'])
+@jwt_required()
+@cross_origin()
+def delete_post():
+    data = request.get_json()
+    title = data['title']
+    response = delete_post_by_title(title)
+    return response
+
+
+@post.route('/user/<username>', methods=['GET'])
+@cross_origin()
 def get_user_posts(username):
-    return jsonify(get_posts_from_user(username))
+    return Response(
+        json_util.dumps(get_posts_from_user(username)),
+        mimetype='application/json'
+    )
 
 
 @post.route('/all', methods=['GET'])
@@ -35,7 +70,38 @@ def all_posts():
     return jsonify(get_all_posts())
 
 
+@post.route('/author', methods=['GET'])
+def post_author():
+    query_parameters = request.args
+    author_id = query_parameters.get('id')
+    response = jsonify(get_author_from_post(author_id))
+    return response
+
+
 @post.route('/last/<number>/<offset>', methods=['GET'])
 @cross_origin()
 def load_posts_with_offset(number, offset):
-    return jsonify(load_posts_with_offset_service(number, offset))
+    return Response(
+        json_util.dumps(load_posts_with_offset_service(number, offset)),
+        mimetype='application/json'
+    )
+    # return json_util.dumps(load_posts_with_offset_service(number, offset))
+    # return jsonify(load_posts_with_offset_service(number, offset))
+
+
+@post.route('/comment', methods=['POST'])
+@jwt_required()
+@cross_origin()
+def add_new_comment():
+    data = request.get_json()
+    post_id = data['post_id']
+    comment_body = data['body']
+    response = add_new_comment_to_post(post_id, comment_body)
+    return response
+
+
+@post.route('/comment/get', methods=['GET'])
+@cross_origin()
+def get_comments():
+    post_id = request.args.get('post_id')
+    return get_post_comments(post_id)

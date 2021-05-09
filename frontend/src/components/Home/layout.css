@@ -6,9 +6,13 @@
     /*align-items: stretch;*/
 }
 
+.loader-antd {
+    width: 100%;
+}
+
 .loading {
     text-align: center;
-    margin-left: -47px;
+    /*margin-left: -47px;*/
 }
 
 .lds-ellipsis {

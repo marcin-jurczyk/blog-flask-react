@@ -3,7 +3,7 @@
 .header {
     background: #fff;
     overflow: auto;
-    position:fixed;
+    position: fixed;
     width:100%;
     left:0;
     top:0;
@@ -20,12 +20,19 @@
     margin-bottom: 200px;
 }
 
+/*.layout-content {*/
+/*    background: url("../_images/blog-background.jpeg") no-repeat 0 0;*/
+/*}*/
+
 .content {
     background: #fff;
     /* top - left/right - bottom */
     margin: 95px 70px 69px;
     border-radius: 20px;
     position: relative;
+    z-index: 0;
+    /*overflow: auto;*/
+    /*height: 50px;*/
     /*padding: 2% 5%;*/
 }
 

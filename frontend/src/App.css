@@ -10,6 +10,19 @@
     padding-bottom: 20px;
 }
 
+.wave {
+    position: absolute;
+    width: 100%;
+    /*height: 40%;*/
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    border-radius: inherit;
+    border-collapse: separate;
+    overflow: hidden;
+}
+
+
 /*.App {*/
 /*  text-align: center;*/
 /*}*/

@@ -1,0 +1,51 @@
+/*.user-info {*/
+/*    display: flex;*/
+/*    position: relative;*/
+/*}*/
+
+/*.avatar_image {*/
+/*    display: inline-block;*/
+/*    width: 50%;*/
+/*    text-align: center;*/
+/*}*/
+
+/*.user-information {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    flex-direction: column;*/
+/*    height: 400px;*/
+/*}*/
+
+/*.user {*/
+/*    !*display: inline-block;*!*/
+/*    margin-left: auto;*/
+/*    margin-right: auto;*/
+/*    width: 50%;*/
+/*    font-size: 30px;*/
+/*    font-weight: bold;*/
+/*}*/
+
+.tab1{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-card {
+    /*display: inline-block;*/
+}
+
+.profile-collapse {
+    /*background: #29cd00;*/
+    /*display: inline-block;*/
+}
+
+.tab {
+    margin-top: 2%;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+/*.ant-tabs-tab {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*}*/

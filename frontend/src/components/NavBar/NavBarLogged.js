@@ -2,7 +2,7 @@ import React, {useContext, useEffect} from 'react';
 import {Menu} from "antd";
 import {Link, useHistory} from "react-router-dom";
 import {getEmail, logout, UserContext} from "../../services/user";
-import {HomeOutlined} from "@ant-design/icons"
+import {HomeOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons"
 import './layout.css'
 import {API} from "../../services/api";
 import SubMenu from "antd/es/menu/SubMenu";
@@ -26,8 +26,8 @@ export const NavBarLogged = () => {
     const getAvatar = () => {
         let url = user.avatar_url
         return (
-            <img src={url} alt="avatar" style={{
-                background: "yellow",
+            <img className="avatar-item" src={url} alt="avatar" style={{
+                // border: "1px solid #999",
                 borderRadius: 15,
                 width: 30,
                 height: 30
@@ -36,8 +36,8 @@ export const NavBarLogged = () => {
     };
 
     const handleLogout = () => {
+        history.push('/');
         logout();
-        history.push('/')
     };
 
     const handleUserItem = () => {
@@ -53,6 +53,10 @@ export const NavBarLogged = () => {
         )
     }
 
+    const handleProfile = () => {
+        history.push('/profile', {activeKey: "1"});
+    }
+
     return (
         <Menu
             className="menu"
@@ -60,14 +64,17 @@ export const NavBarLogged = () => {
             mode="horizontal"
         >
             <Menu.Item className={"home-page"}>
-                <Link to="home"><HomeOutlined/>Home Page</Link>
+                <Link to="home"><HomeOutlined />Home Page</Link>
             </Menu.Item>
             <Menu.Item className={"add-post"}>
                 <Link to="add_post">Add post</Link>
             </Menu.Item>
             <SubMenu title={handleUserItem()} className="submenu">
+                <Menu.Item onClick={() => handleProfile()} >
+                    <UserOutlined /> {"\t"} Profile
+                </Menu.Item>
                 <Menu.Item onClick={() => handleLogout()} >
-                    Logout
+                    <LogoutOutlined /> {"\t"} Logout
                 </Menu.Item>
             </SubMenu>
         </Menu>

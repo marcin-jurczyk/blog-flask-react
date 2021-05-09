@@ -7,6 +7,10 @@ import {NotLogged} from "../../../views/NotLogged";
 import './layout.css'
 import {registerFormLayout} from "./layout";
 import {login} from "../../../services/user";
+import {wave} from "../../../services/wave";
+
+const color1 = '#d719ec'
+const color2 = '#6200a8'
 
 export const SignUp = () => {
     const history = useHistory();
@@ -23,8 +27,8 @@ export const SignUp = () => {
                         history.push('/home');
                     }))
             }))
-            .catch((errInfo) => {
-                message.error(`Cannot register the user: `);
+            .catch(() => {
+                message.error(`Cannot register the user: ` + values.email.toString());
             })
     };
 
@@ -37,8 +41,6 @@ export const SignUp = () => {
                 <Form
                     name="sign-up"
                     onFinish={onFinish}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 16 }}
                     {...registerFormLayout}
                 >
                     <Form.Item
@@ -114,13 +116,14 @@ export const SignUp = () => {
                     >
                         <Input/>
                     </Form.Item>
-                    <Form.Item className='form-item'>
+                    <Form.Item className='button-item'>
                         <Button type="primary" htmlType="submit" className="sign-up-form-button">
                             Sign-up
                         </Button>
                     </Form.Item>
                 </Form>
             </div>
+            {wave(color1, color2, "35%")}
         </NotLogged>
     )
 }

@@ -6,9 +6,11 @@ import {Link} from "react-router-dom";
 import {useHistory} from "react-router-dom";
 import {login} from "../../../services/user";
 import {NotLogged} from "../../../views/NotLogged";
-
-
+import {wave} from "../../../services/wave";
 import "./layout.css"
+
+const color1 = '#144ec4'
+const color2 = '#2dc4f3'
 
 export const Login = () => {
     const history = useHistory();
@@ -22,9 +24,9 @@ export const Login = () => {
                 login(response.data['Bearer token']);
                 history.push('/home')
             }))
-            .catch((errInfo) => {
-                message.error(`Wrong username or password`).then();
-                console.log(errInfo)
+            .catch(errInfo => {
+                // message.error(errInfo.response.data)
+                message.error(`Wrong username or password`)
             })
     };
 
@@ -50,7 +52,7 @@ export const Login = () => {
                             },
                         ]}
                     >
-                        <Input prefix={<MailOutlined className="site-form-item-icon" />} placeholder="E-mail" />
+                        <Input prefix={<MailOutlined className="site-form-item-icon"/>} placeholder="E-mail"/>
                     </Form.Item>
                     <Form.Item
                         name="password"
@@ -62,7 +64,7 @@ export const Login = () => {
                         ]}
                     >
                         <Input
-                            prefix={<LockOutlined className="site-form-item-icon" />}
+                            prefix={<LockOutlined className="site-form-item-icon"/>}
                             type="password"
                             placeholder="Password"
                         />
@@ -72,11 +74,12 @@ export const Login = () => {
                             Login
                         </Button>
                         <div className="link">
-                            Or <Link to="/register">register now!</Link>
+                            Or <Link to="/sign-up">register now!</Link>
                         </div>
                     </Form.Item>
                 </Form>
             </div>
+            {wave(color1, color2, "40%")}
         </NotLogged>
     )
 };

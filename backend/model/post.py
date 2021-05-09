@@ -21,5 +21,12 @@ class Post(db.Document):
     def get_author(self):
         return self.author
 
+    def to_json(self):
+        data = self.to_mongo()
+        data["author"] = {
+            "username": self.author.username,
+            "avatar_url": self.author.avatar_url
+        }
+        return data
 
 

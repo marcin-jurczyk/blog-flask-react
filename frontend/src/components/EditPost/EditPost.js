@@ -1,4 +1,4 @@
-import React, { useRef, useState} from 'react'
+import React, {useMemo, useRef, useState} from 'react'
 import {Logged} from "../../views/Logged";
 import JoditEditor from "jodit-react";
 import SuccessAnimation from 'actually-accessible-react-success-animation'
@@ -7,17 +7,23 @@ import './layout.css'
 import {API} from "../../services/api";
 import {Button, Form, Input, message} from "antd";
 import {useHistory} from "react-router-dom";
+import {useLocation} from "react-router";
 
 
-export const AddPost = () => {
-    const history = useHistory();
+export const EditPost = () => {
 
     const editor = useRef(null)
-    const [content] = useState('')
+    const original_post = useLocation().state.post
+
+    const history = useHistory();
+
+    const [textAreaValue, setTextAreaValue] = useState(original_post.body)
+
     const config = {
         readonly: false, // all options from https://xdsoft.net/jodit/doc/
         minHeight: 500,
-        placeholder: "Type in your content here..."
+        toolbar: true,
+        placeholder: ""
     }
 
     const animation = () => {
@@ -29,23 +35,28 @@ export const AddPost = () => {
         )
     }
 
-    const addNewPost = values => {
-        API.post('/post/new', {
+    const editPost = values => {
+        API.put('/post/edit', {
+            post_id: original_post.id.$oid,
             title: values.title,
-            body: values.body,
+            body: textAreaValue
         })
             .then((() => {
-                message.success("Post added successfully!");
-                history.push('/home')
-                animation()
+                message.success("Post edited successfully!");
+                history.push('/profile', {activeKey: "2"})
             }))
             .catch((errInfo) => {
                 // if (error.response.status)
-                message.error(`Wrong username or password`).then();
-                console.log(errInfo)
+                message.error(errInfo.response.data);
             })
     }
 
+    const handleTextAreaChange = newTextAreaValue => {
+        console.log('handleTextAreaChange', newTextAreaValue)
+        return (
+            setTextAreaValue(() => newTextAreaValue)
+        )
+    }
 
     return (
         <Logged>
@@ -54,11 +65,12 @@ export const AddPost = () => {
                     name="add-new-post"
                     className="add-new-post"
                     initialValues={{remember: true}}
-                    onFinish={addNewPost}
+                    onFinish={editPost}
                 >
                     Title:
                     <Form.Item
                         name="title"
+                        initialValue={original_post.title}
                         rules={[
                             {
                                 required: true,
@@ -70,7 +82,6 @@ export const AddPost = () => {
                     </Form.Item>
                     Content:
                     <Form.Item
-                        name="body"
                         rules={[
                             {
                                 required: true,
@@ -78,31 +89,22 @@ export const AddPost = () => {
                             },
                         ]}
                     >
-                        <JoditEditor
-                            ref={editor}
-                            value={content}
-                            config={config}
-                            // tabIndex={1}
-                            // onBlur={newContent => setContent(newContent)}
-                            // onChange={newContent => {}}
-                        />
+                        {useMemo(() => (
+                                <JoditEditor
+                                    editor={editor}
+                                    config={config}
+                                    onChange={handleTextAreaChange}
+                                    value={textAreaValue}/>
+                            ), [] )
+                        }
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" block="true" className="add-new-post-button">
-                            Add post
+                            Edit post
                         </Button>
                     </Form.Item>
                 </Form>
-                {/*<div className="perform-action">*/}
-                {/*    <button className="add-post-button">*/}
-                {/*        Cancel*/}
-                {/*    </button>*/}
-                {/*    <button className="add-post-button">*/}
-                {/*        Cancel*/}
-                {/*    </button>*/}
-                {/*</div>*/}
             </div>
         </Logged>
     )
-
 }

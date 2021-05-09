@@ -1,8 +1,10 @@
 from flask import Blueprint, request
 from flask_cors import cross_origin
-from flask_jwt_extended import jwt_required
-
-from service.service import *
+from flask_jwt_extended import jwt_required, get_jwt_header
+from app import jwt
+from model.jwt import BlockedJWT
+from service.auth import *
+from service.post import *
 
 auth = Blueprint('auth', __name__)
 
@@ -15,18 +17,29 @@ def credentials(response):
     return response
 
 
+# @jwt.token_in_blocklist_loader
+# def check_if_token_in_blacklist(jwt_header, jwt_payload):
+#     jti = jwt_payload['jti']
+#     return BlockedJWT.is_blocked(jti)
+
+
 @auth.route('/login', methods=['POST'])
 @cross_origin()
 def login():
     data = request.get_json()
-    return jsonify(login_controller(data['email'], data['password']))
+    email = data['email']
+    password = data['password']
+    return login_controller(email, password)
 
 
 @auth.route('/sign-up', methods=['POST'])
 @cross_origin()
 def sign_up():
     data = request.get_json()
-    return sign_up_controller(data['email'], data['username'], data['password'])
+    email = data['email']
+    username = data['username']
+    password = data['password']
+    return sign_up_controller(email, username, password)
 
 
 @auth.route('/username/<username>', methods=['GET'])
@@ -37,27 +50,58 @@ def get_user_by_username(username):
 
 
 @auth.route('/email/<email>', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 @cross_origin()
 def get_user_by_email(email):
     return get_user_info(email, 'EMAIL')
 
 
+# test method
 @auth.route('/secret', methods=['GET'])
 @jwt_required()
 def secret():
-    return {
-        "message": "access granted"
-    }
+    return {"message": "access granted"}
 
 
-@auth.route('/change/password', methods=['PUT'])
+@auth.route('/change/password', methods=['PATCH'])
 @jwt_required()
+@cross_origin()
 def change_password():
     data = request.get_json()
-    old_password = data['password']
+    current_password = data['current_password']
     new_password = data['new_password']
-    return change_password_service(old_password, new_password)
+    return change_password_service(current_password, new_password)
+
+
+@auth.route('/change/username', methods=['PATCH'])
+@jwt_required()
+@cross_origin()
+def change_username():
+    data = request.get_json()
+    current_username = data['current_username']
+    new_username = data['new_username']
+    return change_username_service(current_username, new_username)
+
+
+@auth.route('/change/email', methods=['PATCH'])
+@jwt_required()
+@cross_origin()
+def change_email():
+    data = request.get_json()
+    current_email = data['current_email']
+    new_email = data['new_email']
+    return change_email_service(current_email, new_email)
+
+
+@auth.route('/check/jwt', methods=['GET'])
+@jwt_required()
+def check_jwt():
+    jwt = get_jwt_identity()
+    print(jwt)
+    return jsonify(jwt)
+
+
+
 
     # if existing_user is None:
     #
