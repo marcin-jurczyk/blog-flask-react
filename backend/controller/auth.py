@@ -1,8 +1,8 @@
+from datetime import timezone, timedelta
+
 from flask import Blueprint, request
 from flask_cors import cross_origin
-from flask_jwt_extended import jwt_required, get_jwt_header
-from app import jwt
-from model.jwt import BlockedJWT
+from flask_jwt_extended import jwt_required, get_jwt_header, get_jwt, set_access_cookies
 from service.auth import *
 from service.post import *
 
@@ -17,10 +17,21 @@ def credentials(response):
     return response
 
 
-# @jwt.token_in_blocklist_loader
-# def check_if_token_in_blacklist(jwt_header, jwt_payload):
-#     jti = jwt_payload['jti']
-#     return BlockedJWT.is_blocked(jti)
+# Using an `after_request` callback, we refresh any token that is within 30
+# minutes of expiring. Change the timedeltas to match the needs of your application.
+@auth.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            set_access_cookies(response, access_token)
+        return response
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original respone
+        return response
 
 
 @auth.route('/login', methods=['POST'])
@@ -29,7 +40,7 @@ def login():
     data = request.get_json()
     email = data['email']
     password = data['password']
-    return login_controller(email, password)
+    return login_service(email, password)
 
 
 @auth.route('/sign-up', methods=['POST'])
@@ -39,28 +50,21 @@ def sign_up():
     email = data['email']
     username = data['username']
     password = data['password']
-    return sign_up_controller(email, username, password)
+    return sign_up_service(email, username, password)
 
 
 @auth.route('/username/<username>', methods=['GET'])
 @jwt_required()
 @cross_origin()
 def get_user_by_username(username):
-    return get_user_info(username, 'USERNAME')
+    return get_user_info_service(username, 'USERNAME')
 
 
 @auth.route('/email/<email>', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 @cross_origin()
 def get_user_by_email(email):
-    return get_user_info(email, 'EMAIL')
-
-
-# test method
-@auth.route('/secret', methods=['GET'])
-@jwt_required()
-def secret():
-    return {"message": "access granted"}
+    return get_user_info_service(email, 'EMAIL')
 
 
 @auth.route('/change/password', methods=['PATCH'])
@@ -101,52 +105,8 @@ def check_jwt():
     return jsonify(jwt)
 
 
-
-
-    # if existing_user is None:
-    #
-    #     password = generate_password_hash(form.password.data, method='sha256')
-    #     new_user = User(email=form.email.data, password=password, username=form.username.data)
-    #     new_user.save()
-    #     print(new_user)
-    #     return Response(new_user, mimetype="application/json", status=200)
-
-#     email = request.form.get('email')
-#     username = request.form.get('username')
-#     password1 = request.form.get('password1')
-#     password2 = request.form.get('password2')
-#
-#     if len(email) < 4:
-#         flash("Email must be greater than 4 characters...", category='error')
-#     elif len(username) < 2:
-#         flash("First name must be greater than 2 characters...", category='error')
-#     elif password1 != password2:
-#         flash("Passwords don't match...", category='error')
-#     elif len(password1) < 5:
-#         flash("Password must be at least 7 characters...", category='error')
-#     else:
-#
-#         User.objects(email=email).first()
-#
-#         new_user = User(username=username)
-#         # add user to db
-#         flash("Account created successfully!", category='success')
-#
-# return render_template("sign-up.html")
-
-
-# data = request.data
-# form = RegistrationForm()
-# print(form.email.data)
-# print(form.password.data)
-# print(form.username.data)
-# if request.method == 'POST' and form.validate_on_submit():
-#     print('validate')
-#     existing_user = User.objects(email=form.email.data).first()
-#     if existing_user is None:
-#         password = generate_password_hash(form.password.data, method='sha256')
-#         new_user = User(email=form.email.data, password=password, username=form.username.data)
-#         new_user.save()
-#         print(new_user)
-#         return Response(new_user, mimetype="application/json", status=200)
-# return "bad sign-up"
+# test method
+@auth.route('/secret', methods=['GET'])
+@jwt_required()
+def secret():
+    return {"message": "access granted"}

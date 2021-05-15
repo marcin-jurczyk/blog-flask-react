@@ -1,6 +1,5 @@
 import axios from 'axios'
 import {history} from "./history";
-import {logout} from "./user";
 
 const instance = axios.create({
     baseURL: 'http://127.0.0.1:5000/api/blog',

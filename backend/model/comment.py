@@ -12,8 +12,9 @@ class Comment(EmbeddedDocument):
     modified = db.BooleanField(default=False)
     lastModifiedAt = db.DateTimeField(default=datetime.utcnow)
 
-    def edit(self, new_body):
-        if not self.modified:
-            self.modified = True
-        self.lastModifiedAt = datetime.utcnow
-        self.body = new_body
+
+    # def edit(self, new_body):
+    #     if not self.modified:
+    #         self.modified = True
+    #     self.lastModifiedAt = datetime.utcnow
+    #     self.body = new_body

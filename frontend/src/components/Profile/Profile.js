@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react'
 import {Logged} from "../../views/Logged";
 import {displayGrvatar, UserContext} from "../../services/user";
 
-import {Card, Collapse, Descriptions, List,Tabs} from 'antd';
+import {Card, Collapse, Descriptions, List, Tabs} from 'antd';
 import './layout.css'
 import {API} from "../../services/api";
 import {PostShort} from "../Home/PostShort/PostShort";
@@ -42,43 +42,44 @@ export const Profile = () => {
                 >
                     <TabPane tab="User info" key="1">
                         <div className="tab1">
-                            <Card
-                                style={{marginTop: 16, minWidth: "500px", width: "80%"}}
-                                className="profile-card"
-                            >
-                                <Meta
-                                    avatar={
-                                        displayGrvatar(user.avatar_url, 250)
-                                    }
-                                    description={
-                                        <Descriptions title="User Info" column={1} contentStyle={{fontWeight: "bold"}}>
-                                            <Descriptions.Item label="Username"> {user.username} </Descriptions.Item>
-                                            <Descriptions.Item label="E-mail"> {user.email} </Descriptions.Item>
-                                            {posts !== null &&
-                                            <Descriptions.Item
-                                                label="Posts amount"> {Object.keys(posts).length} </Descriptions.Item>
-                                            }
-                                        </Descriptions>
-                                    }
-                                />
-
+                            <Card className="profile-card">
+                                <div className="profile-avatar">
+                                    {displayGrvatar(user.avatar_url, 250)}
+                                </div>
+                                <div className="profile-description">
+                                    <Descriptions
+                                        title="User Info"
+                                        column={1}
+                                        labelStyle={{fontSize: "15px"}}
+                                        contentStyle={{fontWeight: "bold", fontSize: "15px"}}>
+                                        <Descriptions.Item label="Username"> {user.username} </Descriptions.Item>
+                                        <Descriptions.Item label="E-mail"> {user.email} </Descriptions.Item>
+                                        {posts !== null &&
+                                        <Descriptions.Item
+                                            label="Posts amount"> {Object.keys(posts).length} </Descriptions.Item>
+                                        }
+                                    </Descriptions>
+                                </div>
                             </Card>
                             <Collapse
                                 bordered={false}
                                 ghost
                                 className="profile-collapse"
                             >
-                                <Panel header={<><EditTwoTone twoToneColor="red"/> Change password</>} key="1"
+                                <Panel header={<><EditTwoTone /> Change password</>} key="1" className="custom-panel"
                                        showArrow={false}>
                                     <ChangePassword/>
                                 </Panel>
-                                <Panel header={<><EditTwoTone twoToneColor="orange"/> Change username</>} key="2"
+                                <Panel header={<><EditTwoTone /> Change username</>} key="2" className="custom-panel"
                                        showArrow={false}>
                                     <ChangeUsername/>
                                 </Panel>
-                                <Panel header={<><EditTwoTone twoToneColor="#29cd00"/> Change username</>} key="3"
+                                <Panel header={<><EditTwoTone /> Change email</>} key="3" className="custom-panel"
                                        showArrow={false}>
                                     <ChangeEmail/>
+                                </Panel>
+                                <Panel header="" key="4" className="custom-panel-2"
+                                       showArrow={false}>
                                 </Panel>
                             </Collapse>
                         </div>

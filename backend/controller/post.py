@@ -23,7 +23,7 @@ def new_post():
     data = request.get_json()
     title = data['title']
     body = data['body']
-    return add_new_post(title, body)
+    return add_new_post_service(title, body)
 
 
 @post.route('/get', methods=['GET'])
@@ -52,29 +52,29 @@ def edit_post():
 def delete_post():
     data = request.get_json()
     title = data['title']
-    response = delete_post_by_title(title)
+    response = delete_post_service(title)
     return response
+
+
+@post.route('/all', methods=['GET'])
+def all_posts():
+    return jsonify(get_all_posts_service())
 
 
 @post.route('/user/<username>', methods=['GET'])
 @cross_origin()
 def get_user_posts(username):
     return Response(
-        json_util.dumps(get_posts_from_user(username)),
+        json_util.dumps(get_user_posts_service(username)),
         mimetype='application/json'
     )
 
 
-@post.route('/all', methods=['GET'])
-def all_posts():
-    return jsonify(get_all_posts())
-
-
 @post.route('/author', methods=['GET'])
-def post_author():
+def get_post_author():
     query_parameters = request.args
     author_id = query_parameters.get('id')
-    response = jsonify(get_author_from_post(author_id))
+    response = jsonify(get_post_author_service(author_id))
     return response
 
 
@@ -96,12 +96,12 @@ def add_new_comment():
     data = request.get_json()
     post_id = data['post_id']
     comment_body = data['body']
-    response = add_new_comment_to_post(post_id, comment_body)
+    response = add_new_comment_service(post_id, comment_body)
     return response
 
 
 @post.route('/comment/get', methods=['GET'])
 @cross_origin()
-def get_comments():
+def get_post_comments():
     post_id = request.args.get('post_id')
-    return get_post_comments(post_id)
+    return get_post_comments_service(post_id)

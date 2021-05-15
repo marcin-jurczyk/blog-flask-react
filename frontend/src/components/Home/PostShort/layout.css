@@ -1,3 +1,5 @@
+@import '~antd/dist/antd.css';
+
 .post-short {
     background: #dbd8d8;
     border-radius: 20px;
@@ -71,7 +73,9 @@
 }
 
 .post_author_info {
+    color: #5d5d5d;
     display: block;
+    margin-top: 20px;
     bottom: 10px;
 }
 
@@ -81,14 +85,23 @@
 }
 
 .edit-wrapper {
-    background: #2fff00;
     display: inline-block;
     width: 90px;
     text-align: center;
 }
 
-.post-edit-button {
+.post-edit-button, .post-delete-button {
     display: inline-block;
+}
+
+.post-delete-button {
+    margin-left: 10px;
+}
+
+.post-delete-button:hover {
+    background: #e66d10;
+    color: #5d5d5d;
+    border-color: red;
 }
 
 .last-modified {

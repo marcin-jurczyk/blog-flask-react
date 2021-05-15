@@ -10,6 +10,7 @@ def create_avatar_hash(email):
 
 class User(db.Document, UserMixin):
     """User collection"""
+    meta = {'collection': 'user'}
     email = db.EmailField(required=True, unique=True)
     username = db.StringField(required=True)
     password = db.StringField(required=True)

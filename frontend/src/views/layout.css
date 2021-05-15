@@ -2,7 +2,7 @@
 
 .header {
     background: #fff;
-    overflow: auto;
+    overflow: hidden;
     position: fixed;
     width:100%;
     left:0;
@@ -31,7 +31,7 @@
     border-radius: 20px;
     position: relative;
     z-index: 0;
-    /*overflow: auto;*/
+    /*overflow: hidden;*/
     /*height: 50px;*/
     /*padding: 2% 5%;*/
 }

@@ -10,27 +10,27 @@ def get_user_id(email):
     if user is not None:
         return user.id
     else:
-        return Response(
-            "No user found with email: " + email,
-            status=404
-        )
+        return Response(f'No user found with email: {email}', status=404)
 
 
-def login_controller(email, password):
+def login_service(email, password):
     user = User.objects(email=email).first()
     if user is not None:
         if check_password_hash(user.password, password):
+            access_token = create_access_token(identity=email)
             return jsonify({
-                'Bearer token': create_access_token(identity=email, expires_delta=False)
+                'Bearer token': access_token
             })
         else:
             return Response("Password is incorrect", status=401)
+    else:
+        return Response("No user found with email: " + email, status=404)
 
-    return Response("No user found with email: " + email, status=404)
 
-
-def sign_up_controller(email, username, password):
-    if User.objects(email=email).first() is None:
+def sign_up_service(email, username, password):
+    user_email = User.objects(email=email).first()
+    user_username = User.objects(username=username).first()
+    if user_email is None and user_username is None:
         hash_pass = generate_password_hash(password, method='sha256')
         new_user = User(email=email, username=username, password=hash_pass)
         new_user.save()
@@ -39,7 +39,7 @@ def sign_up_controller(email, username, password):
         return Response("User already exist...", status=409)
 
 
-def get_user_info(value, option):
+def get_user_info_service(value, option):
     if option == 'USERNAME':
         user = User.objects(username=value).first()
     elif option == 'EMAIL':

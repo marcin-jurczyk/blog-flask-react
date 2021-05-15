@@ -1,7 +1,8 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {createElement, useContext, useEffect, useState} from "react";
 import {useLocation} from "react-router";
 import moment from "moment";
-import {Row, Col, Divider, Typography, List, Comment, Form, Button, message} from 'antd';
+import {Row, Col, Divider, Typography, List, Comment, Form, Button, message, Tooltip} from 'antd';
+import {DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled} from '@ant-design/icons';
 import {ClockCircleOutlined, CommentOutlined, UserOutlined} from '@ant-design/icons';
 import {displayGrvatar, UserContext} from "../../services/user";
 import {Logged} from "../../views/Logged";
@@ -22,6 +23,9 @@ export const Post = () => {
     // comment
     const [value, setValue] = useState('')
     const [comments, setComments] = useState()
+    const [likes, setLikes] = useState(0);
+    const [dislikes, setDislikes] = useState(0);
+    const [action, setAction] = useState(null);
 
     useEffect(() => {
         async function loadData() {
@@ -30,6 +34,7 @@ export const Post = () => {
             })
             setComments(comments.data)
         }
+
         loadData().then(/* do nothing */);
     }, [post.id.$oid])
 
@@ -47,6 +52,33 @@ export const Post = () => {
             })
         }
     }
+
+    const like = () => {
+        setLikes(1);
+        setDislikes(0);
+        setAction('liked');
+    };
+
+    const dislike = () => {
+        setLikes(0);
+        setDislikes(1);
+        setAction('disliked');
+    };
+
+    const actions = [
+        <Tooltip key="comment-basic-like" title="Like">
+      <span onClick={like}>
+        {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
+          <span className="comment-action">{likes}</span>
+      </span>
+        </Tooltip>,
+        <Tooltip key="comment-basic-dislike" title="Dislike">
+      <span onClick={dislike}>
+        {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)}
+          <span className="comment-action">{dislikes}</span>
+      </span>
+        </Tooltip>,
+    ];
 
     const content = () => {
         return (
@@ -79,7 +111,6 @@ export const Post = () => {
         )
     }
 
-    console.log(value)
     if (localStorage.token === 'undefined' || !localStorage.token) {
         return (
             <NotLogged>
@@ -89,7 +120,7 @@ export const Post = () => {
                     {post.comments.length > 0 &&
                     <div className="comment-section">
                         <span style={{fontWeight: "bold"}}> COMMENTS </span>
-                        <CommentList comments={comments.comments}/>
+                        <CommentList comments={comments.comments} actions={actions}/>
                     </div>
                     }
                 </div>
@@ -105,7 +136,7 @@ export const Post = () => {
                     {post.comments.length > 0 &&
                     <div className="comment-section">
                         <span style={{fontWeight: "bold"}}> COMMENTS </span>
-                        <CommentList comments={comments.comments}/>
+                        <CommentList comments={comments.comments} actions={actions}/>
                     </div>
                     }
                     <Comment
@@ -131,7 +162,7 @@ export const Post = () => {
 
 }
 
-const CommentList = ({comments}) => (
+const CommentList = ({comments, actions}) => (
     <List
         dataSource={comments}
         header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
@@ -139,6 +170,7 @@ const CommentList = ({comments}) => (
         renderItem={comment => {
             return (
                 <Comment
+                    // actions={actions}
                     content={comment.body}
                     author={comment.user.username}
                     avatar={comment.user.avatar_url}

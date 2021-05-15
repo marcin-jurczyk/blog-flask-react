@@ -2,12 +2,13 @@ import React from "react";
 import moment from "moment";
 import {gradient} from "../../../services/gradient";
 import {displayGrvatar} from "../../../services/user";
-import {EditOutlined} from '@ant-design/icons';
+import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import LinesEllipsis from 'react-lines-ellipsis'
 
 import "./layout.css"
 import {useHistory} from "react-router-dom";
-import {Button, Divider, Tooltip} from "antd";
+import {Button, Divider, message, Tooltip} from "antd";
+import {API} from "../../../services/api";
 
 export const PostShort = props => {
     const history = useHistory();
@@ -25,6 +26,21 @@ export const PostShort = props => {
 
     function handleOnClickEdit() {
         history.push('/edit-post', {post: props})
+    }
+
+    function handleOnClickDelete() {
+        API.delete('/post/delete', {
+            data: {
+                title: props.title
+            }
+        }).then(() => {
+                message.success("Post deleted successfully!")
+                window.location.reload(false)
+                history.push('/profile', {activeKey: "2"})
+            }
+        ).catch(errInfo => {
+            message.error(errInfo.response.data)
+        })
     }
 
     return (
@@ -58,7 +74,8 @@ export const PostShort = props => {
                     {props.type === "home" &&
                     <div className="post_author_info">
                         <Tooltip title={props.author.username} placement="top">
-                            {displayGrvatar(props.author.avatar_url, 40)}
+                            {displayGrvatar(props.author.avatar_url, 30)}
+                            {" "}{props.author.username}
                         </Tooltip>
                     </div>
                     }
@@ -72,6 +89,14 @@ export const PostShort = props => {
                             handleOnClickEdit()
                         }}>
                             Edit
+                        </Button>
+                    </div>
+                    <div className="post-delete-button">
+                        <Button icon={<DeleteOutlined/>} shape="round" onClick={(e) => {
+                            e.stopPropagation()
+                            handleOnClickDelete()
+                        }}>
+                            Delete
                         </Button>
                     </div>
                     {props.modified === true &&

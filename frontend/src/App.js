@@ -4,10 +4,11 @@ import {history} from "./services/history";
 // import {loginAutomatically} from "./services/user";
 import {Routing} from "./Routing";
 import './App.css';
+import {loginAutomatically} from "./services/user";
 
-// if (loginAutomatically()) {
-//     history.push('/')
-// }
+
+loginAutomatically()
+
 
 function App() {
     return (

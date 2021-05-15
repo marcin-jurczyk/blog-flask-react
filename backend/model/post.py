@@ -5,6 +5,7 @@ from model.user import User
 
 class Post(db.Document):
     """Post collection with its comments"""
+    meta = {'collection': 'post'}
     title = db.StringField(required=True)
     body = db.StringField()
     author = db.ReferenceField(User)

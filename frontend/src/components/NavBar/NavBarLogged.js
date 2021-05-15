@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {Menu} from "antd";
+import {Menu, message} from "antd";
 import {Link, useHistory} from "react-router-dom";
 import {getEmail, logout, UserContext} from "../../services/user";
 import {HomeOutlined, LogoutOutlined, UserOutlined} from "@ant-design/icons"
@@ -11,7 +11,6 @@ import SubMenu from "antd/es/menu/SubMenu";
 export const NavBarLogged = () => {
 
     const history = useHistory();
-
     const {user, setUser} = useContext(UserContext)
 
     useEffect(() => {
@@ -19,8 +18,7 @@ export const NavBarLogged = () => {
             const user = await API.get(`/auth/email/${getEmail()}`)
             setUser(user.data);
         }
-
-        loadData().then(/* do nothing */);
+        loadData();
     }, [setUser])
 
     const getAvatar = () => {

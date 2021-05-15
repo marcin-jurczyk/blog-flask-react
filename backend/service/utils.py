@@ -42,7 +42,7 @@ def load_posts_for_user(user_id):
     ]
 
 
-def get_comments_pipeline(post_id):
+def get_post_comments_pipeline(post_id):
     return [
         {
             "$match": {

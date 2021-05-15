@@ -56,7 +56,6 @@ export const Home = () => {
         return (
             <div>
                 <div className="post-list">
-
                     <List
                         dataSource={postsRequest.posts}
                         locale={{emptyText: "Loading data..."}}

@@ -9,10 +9,10 @@ from model.comment import Comment
 from model.post import Post
 from model.user import User
 from service.auth import get_user_id
-from service.utils import get_comments_pipeline, load_post_with_offset_pipeline, load_posts_for_user
+from service.utils import get_post_comments_pipeline, load_post_with_offset_pipeline, load_posts_for_user
 
 
-def add_new_post(title, body):
+def add_new_post_service(title, body):
     # cannot add two posts with the same title
     if Post.objects(title=title).first() is None:
         current_user = get_jwt_identity()
@@ -64,7 +64,7 @@ def edit_post_service(post_id, new_title, new_body):
         return Response("Post cannot be updated!", status=409)
 
 
-def get_posts_from_user(username):
+def get_user_posts_service(username):
     user = User.objects(username=username).first()
     if user:
         posts = Post.objects.order_by('-createdAt').aggregate(
@@ -75,12 +75,12 @@ def get_posts_from_user(username):
         return Response("User does not exist", 404)
 
 
-def get_all_posts():
+def get_all_posts_service():
     posts = Post.objects().all()
     return posts
 
 
-def get_author_from_post(author_id):
+def get_post_author_service(author_id):
     author = Post.objects(author=author_id).first()
     return author
 
@@ -101,7 +101,7 @@ def load_posts_with_offset_service(number, offset):
     return posts
 
 
-def add_new_comment_to_post(post_id, body):
+def add_new_comment_service(post_id, body):
     # Find logged user
     current_user = get_user_id(get_jwt_identity())
 
@@ -126,7 +126,7 @@ def add_new_comment_to_post(post_id, body):
             return Response("User does not exist", 404)
 
 
-def get_post_comments(post_id):
+def get_post_comments_service(post_id):
     # check if post exists
     post_exist = Post.objects(id=post_id).first()
 
@@ -135,7 +135,7 @@ def get_post_comments(post_id):
     else:
         # perform aggregation
         post = Post.objects().aggregate(
-            get_comments_pipeline(post_id)
+            get_post_comments_pipeline(post_id)
         )
 
         # convert to json
@@ -149,7 +149,7 @@ def get_post_comments(post_id):
             return response[0]
 
 
-def delete_post_by_title(title):
+def delete_post_service(title):
     # get currently logged user
     user = User.objects(email=get_jwt_identity()).first()
 

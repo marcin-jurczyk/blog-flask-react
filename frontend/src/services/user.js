@@ -1,7 +1,7 @@
-import React, {createContext} from 'react'
+import React, {createContext, useContext} from 'react'
 import {API, setAuthHeaders} from "./api";
 import jwt_decode from 'jwt-decode'
-import {Image, message} from "antd";
+import {Image} from "antd";
 import Avatar from "antd/es/avatar/avatar";
 
 export const UserContext = createContext(null);
@@ -28,29 +28,19 @@ export const loginAutomatically = () => {
     return false;
 };
 
+
 export const login = (token) => {
     localStorage.setItem('token', token);
     setAuthHeaders(token);
 };
 
-export const setUser = (user) => {
-    localStorage.setItem('user', JSON.stringify(user));
-};
 
 export const logout = () => {
     localStorage.removeItem('token');
     setAuthHeaders(null);
-    // window.location.reload();
+    window.location.reload();
 };
 
-export const getUserInfo = (email) => {
-    API.get(`/auth/email/${email}`)
-        .then(response => {
-            return response.data;
-    }).catch((errInfo) => {
-        message.error(errInfo);
-    })
-}
 
 export const getEmail = () => {
     const token = localStorage.getItem('token');
