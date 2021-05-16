@@ -1,24 +1,30 @@
-import React, { useRef, useState} from 'react'
+import React, {useContext, useRef, useState} from 'react'
 import {Logged} from "../../views/Logged";
 import JoditEditor from "jodit-react";
 import SuccessAnimation from 'actually-accessible-react-success-animation'
 
 import './layout.css'
 import {API} from "../../services/api";
-import {Button, Form, Input, message} from "antd";
+import {Button, Divider, Form, Input, message} from "antd";
 import {useHistory} from "react-router-dom";
+import {AddTag} from "./AddTag/AddTag";
+import {TagsContext} from "../../services/tags";
+
 
 
 export const AddPost = () => {
     const history = useHistory();
 
-    const editor = useRef(null)
+    const {tags} = useContext(TagsContext)
     const [content] = useState('')
+    const editor = useRef(null)
     const config = {
         readonly: false, // all options from https://xdsoft.net/jodit/doc/
         minHeight: 500,
         placeholder: "Type in your content here..."
     }
+
+    console.log(tags)
 
     const animation = () => {
         return (
@@ -33,6 +39,7 @@ export const AddPost = () => {
         API.post('/post/new', {
             title: values.title,
             body: values.body,
+            tags: tags
         })
             .then((() => {
                 message.success("Post added successfully!");
@@ -56,7 +63,7 @@ export const AddPost = () => {
                     initialValues={{remember: true}}
                     onFinish={addNewPost}
                 >
-                    Title:
+                    <Divider orientation="left">Title:</Divider>
                     <Form.Item
                         name="title"
                         rules={[
@@ -68,7 +75,7 @@ export const AddPost = () => {
                     >
                         <Input className="title-input" placeholder="Type in your title here..."/>
                     </Form.Item>
-                    Content:
+                    <Divider orientation="left">Content:</Divider>
                     <Form.Item
                         name="body"
                         rules={[
@@ -86,6 +93,10 @@ export const AddPost = () => {
                             // onBlur={newContent => setContent(newContent)}
                             // onChange={newContent => {}}
                         />
+                    </Form.Item>
+                    <Divider orientation="left">Tags:</Divider>
+                    <Form.Item>
+                        <AddTag tags={[]} />
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" block="true" className="add-new-post-button">

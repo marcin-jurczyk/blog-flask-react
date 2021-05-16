@@ -1,4 +1,7 @@
 from datetime import datetime
+
+from mongoengine import StringField
+
 from app import db
 from model.user import User
 
@@ -10,6 +13,7 @@ class Post(db.Document):
     body = db.StringField()
     author = db.ReferenceField(User)
     comments = db.ListField()
+    tags = db.ListField(StringField(), default=list)
     createdAt = db.DateTimeField(default=datetime.utcnow)
     modified = db.BooleanField(default=False)
     lastModifiedAt = db.DateTimeField(default=datetime.utcnow)

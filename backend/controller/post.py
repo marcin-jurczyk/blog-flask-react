@@ -23,7 +23,8 @@ def new_post():
     data = request.get_json()
     title = data['title']
     body = data['body']
-    return add_new_post_service(title, body)
+    tags = data['tags']
+    return add_new_post_service(title, body, tags)
 
 
 @post.route('/get', methods=['GET'])
@@ -43,7 +44,8 @@ def edit_post():
     post_id = data['post_id']
     title = data['title']
     body = data['body']
-    return edit_post_service(post_id, title, body)
+    tags = data['tags']
+    return edit_post_service(post_id, title, body, tags)
 
 
 @post.route('/delete', methods=['DELETE'])
@@ -78,11 +80,23 @@ def get_post_author():
     return response
 
 
+@post.route('/tags', methods=['GET'])
+def get_post_by_tags():
+    data = request.get_json()
+    tags = data['tags']
+    response = jsonify(get_posts_by_tags_service(tags))
+    return response
+
+
 @post.route('/last/<number>/<offset>', methods=['GET'])
 @cross_origin()
 def load_posts_with_offset(number, offset):
+    query_parameters = request.args
+    search_type = query_parameters.get('searchType')
+    search = query_parameters.get('search').split(", ")
+    print(search)
     return Response(
-        json_util.dumps(load_posts_with_offset_service(number, offset)),
+        json_util.dumps(load_posts_with_offset_service(number, offset, search_type, search)),
         mimetype='application/json'
     )
     # return json_util.dumps(load_posts_with_offset_service(number, offset))

@@ -98,11 +98,11 @@
     margin-left: 10px;
 }
 
-.post-delete-button:hover {
-    background: #e66d10;
-    color: #5d5d5d;
-    border-color: red;
-}
+/*.post-delete-button:hover {*/
+/*    background: #e66d10;*/
+/*    color: #5d5d5d;*/
+/*    border-color: red;*/
+/*}*/
 
 .last-modified {
     display: inline-block;

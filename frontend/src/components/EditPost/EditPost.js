@@ -1,19 +1,22 @@
-import React, {useMemo, useRef, useState} from 'react'
+import React, {useContext, useMemo, useRef, useState} from 'react'
 import {Logged} from "../../views/Logged";
 import JoditEditor from "jodit-react";
 import SuccessAnimation from 'actually-accessible-react-success-animation'
 
 import './layout.css'
 import {API} from "../../services/api";
-import {Button, Form, Input, message} from "antd";
+import {Button, Divider, Form, Input, message} from "antd";
 import {useHistory} from "react-router-dom";
 import {useLocation} from "react-router";
+import {AddTag} from "../AddPost/AddTag/AddTag";
+import {TagsContext} from "../../services/tags";
 
 
 export const EditPost = () => {
 
     const editor = useRef(null)
     const original_post = useLocation().state.post
+    const {tags} = useContext(TagsContext)
 
     const history = useHistory();
 
@@ -26,20 +29,12 @@ export const EditPost = () => {
         placeholder: ""
     }
 
-    const animation = () => {
-        return (
-            <SuccessAnimation
-                text="PostShort added successfully!"
-                color="#fd74f8"
-            />
-        )
-    }
-
     const editPost = values => {
         API.put('/post/edit', {
             post_id: original_post.id.$oid,
             title: values.title,
-            body: textAreaValue
+            body: textAreaValue,
+            tags: tags
         })
             .then((() => {
                 message.success("Post edited successfully!");
@@ -67,7 +62,7 @@ export const EditPost = () => {
                     initialValues={{remember: true}}
                     onFinish={editPost}
                 >
-                    Title:
+                    <Divider orientation="left">Title:</Divider>
                     <Form.Item
                         name="title"
                         initialValue={original_post.title}
@@ -80,7 +75,7 @@ export const EditPost = () => {
                     >
                         <Input className="title-input" placeholder="Type in your title here..."/>
                     </Form.Item>
-                    Content:
+                    <Divider orientation="left">Content:</Divider>
                     <Form.Item
                         rules={[
                             {
@@ -96,6 +91,12 @@ export const EditPost = () => {
                                     onChange={handleTextAreaChange}
                                     value={textAreaValue}/>
                             ), [] )
+                        }
+                    </Form.Item>
+                    <Divider orientation="left">Tags:</Divider>
+                    <Form.Item>
+                        {
+                            <AddTag tags={original_post.tags}/>
                         }
                     </Form.Item>
                     <Form.Item>

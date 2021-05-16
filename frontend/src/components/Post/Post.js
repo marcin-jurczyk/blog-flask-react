@@ -1,7 +1,7 @@
 import React, {createElement, useContext, useEffect, useState} from "react";
 import {useLocation} from "react-router";
 import moment from "moment";
-import {Row, Col, Divider, Typography, List, Comment, Form, Button, message, Tooltip} from 'antd';
+import {Row, Col, Divider, Typography, List, Comment, Form, Button, message, Tooltip, Tag} from 'antd';
 import {DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled} from '@ant-design/icons';
 import {ClockCircleOutlined, CommentOutlined, UserOutlined} from '@ant-design/icons';
 import {displayGrvatar, UserContext} from "../../services/user";
@@ -10,6 +10,7 @@ import {NotLogged} from "../../views/NotLogged";
 import TextArea from "antd/es/input/TextArea";
 import {API} from "../../services/api";
 import './layout.css'
+import {tagColor} from "../../services/gradient";
 
 const {Title, Paragraph} = Typography;
 
@@ -43,8 +44,7 @@ export const Post = () => {
             API.post(`/post/comment`, {
                 post_id: post.id.$oid,
                 body: value,
-            }).then((response) => {
-                    console.log(response.data)
+            }).then(() => {
                     window.location.reload(false)
                 }
             ).catch((errInfo) => {
@@ -104,6 +104,20 @@ export const Post = () => {
                     {post.title}
                 </Title>
                 <Divider orientation="left" style={{color: '#bbbbbb'}}>Content</Divider>
+                {post.tags !== [] && post.tags !== undefined &&
+                // console.log(props.tags)
+                <div style={{marginTop: "30px", marginBottom: "30px"}}>
+                    {post.tags.map((tag) => (
+                        <Tag
+                            key={tag}
+                            color={tagColor({tag})}
+                            // color={tagsColors[Math.floor(Math.random() * tagsColors.length)]}
+                        >
+                            # {tag}
+                        </Tag>
+                    ))}
+                </div>
+                }
                 <Paragraph>
                     <div dangerouslySetInnerHTML={{__html: post.body}}/>
                 </Paragraph>
@@ -133,12 +147,12 @@ export const Post = () => {
                 {content()}
                 {comments !== undefined &&
                 <div className="post-container">
-                    {post.comments.length > 0 &&
                     <div className="comment-section">
                         <span style={{fontWeight: "bold"}}> COMMENTS </span>
+                        {comments.comments.length > 0 &&
                         <CommentList comments={comments.comments} actions={actions}/>
+                        }
                     </div>
-                    }
                     <Comment
                         className={"new-comment"}
                         avatar={
@@ -159,7 +173,6 @@ export const Post = () => {
             </Logged>
         )
     }
-
 }
 
 const CommentList = ({comments, actions}) => (

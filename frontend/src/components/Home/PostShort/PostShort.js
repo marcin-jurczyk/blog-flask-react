@@ -1,13 +1,13 @@
 import React from "react";
 import moment from "moment";
-import {gradient} from "../../../services/gradient";
+import {gradient, tagColor} from "../../../services/gradient";
 import {displayGrvatar} from "../../../services/user";
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import LinesEllipsis from 'react-lines-ellipsis'
 
 import "./layout.css"
 import {useHistory} from "react-router-dom";
-import {Button, Divider, message, Tooltip} from "antd";
+import {Button, Divider, message, Tag, Tooltip} from "antd";
 import {API} from "../../../services/api";
 
 export const PostShort = props => {
@@ -21,11 +21,13 @@ export const PostShort = props => {
     const stripedHtmlBody = props.body.replace(/<[^>]+>/g, '');
 
     function handleOnClick() {
-        history.push('/post', {post: props})
+        let {onTagClick, ...other} = props;
+        history.push('/post', {post: {...other}})
     }
 
     function handleOnClickEdit() {
-        history.push('/edit-post', {post: props})
+        let {onTagClick, ...other} = props;
+        history.push('/edit-post', {post: {...other}})
     }
 
     function handleOnClickDelete() {
@@ -34,9 +36,9 @@ export const PostShort = props => {
                 title: props.title
             }
         }).then(() => {
-                message.success("Post deleted successfully!")
                 window.location.reload(false)
                 history.push('/profile', {activeKey: "2"})
+                message.success("Post deleted successfully!")
             }
         ).catch(errInfo => {
             message.error(errInfo.response.data)
@@ -62,6 +64,23 @@ export const PostShort = props => {
                         />
                     </div>
                     <Divider/>
+                    {props.tags !== [] && props.tags !== undefined &&
+                    // console.log(props.tags)
+                    <div style={{marginBottom: "20px"}}>
+                        {props.tags.map((tag) => (
+                            <Tag
+                                key={tag}
+                                color={tagColor({tag})}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    props.onTagClick(tag)
+                                }}
+                            >
+                                # {tag}
+                            </Tag>
+                        ))}
+                    </div>
+                    }
                     <div className="post_body">
                         <LinesEllipsis
                             text={stripedHtmlBody}
@@ -92,7 +111,7 @@ export const PostShort = props => {
                         </Button>
                     </div>
                     <div className="post-delete-button">
-                        <Button icon={<DeleteOutlined/>} shape="round" onClick={(e) => {
+                        <Button danger icon={<DeleteOutlined/>} shape="round" onClick={(e) => {
                             e.stopPropagation()
                             handleOnClickDelete()
                         }}>

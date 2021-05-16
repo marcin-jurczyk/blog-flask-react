@@ -12,11 +12,11 @@ from service.auth import get_user_id
 from service.utils import get_post_comments_pipeline, load_post_with_offset_pipeline, load_posts_for_user
 
 
-def add_new_post_service(title, body):
+def add_new_post_service(title, body, tags=None):
     # cannot add two posts with the same title
     if Post.objects(title=title).first() is None:
         current_user = get_jwt_identity()
-        new_post = Post(title=title, body=body, author=get_user_id(current_user))
+        new_post = Post(title=title, body=body, tags=tags, author=get_user_id(current_user))
         new_post.save()
         return jsonify(new_post)
     else:
@@ -32,7 +32,7 @@ def get_post_service(post_id):
         return Response("Post not found!", status=404)
 
 
-def edit_post_service(post_id, new_title, new_body):
+def edit_post_service(post_id, new_title, new_body, new_tags):
     # Find logged user
     current_user = get_user_id(get_jwt_identity())
 
@@ -54,12 +54,13 @@ def edit_post_service(post_id, new_title, new_body):
     elif duplicated_post is not None:
         return Response(f"Post with title {new_title} already exists!", status=403)
     elif str(author) == str(current_user):
-            post.title = new_title
-            post.body = new_body
-            post.modified = True
-            post.lastModifiedAt = datetime.utcnow
-            post.save()
-            return jsonify(post)
+        post.title = new_title
+        post.body = new_body
+        post.tags = new_tags
+        post.modified = True
+        post.lastModifiedAt = datetime.utcnow
+        post.save()
+        return jsonify(post)
     else:
         return Response("Post cannot be updated!", status=409)
 
@@ -85,8 +86,12 @@ def get_post_author_service(author_id):
     return author
 
 
+def get_posts_by_tags_service(tags):
+    return Post.objects(tags__all=tags)
+
+
 # to handle on_scroll function
-def load_posts_with_offset_service(number, offset):
+def load_posts_with_offset_service(number, offset, search_type, search=None):
     start = int(offset)
     stop = int(number) + int(offset)
 
@@ -94,9 +99,15 @@ def load_posts_with_offset_service(number, offset):
     # get posts depending on parameters:
     #   offset - how many post to skip from beginning
     #   number - how many post to return
-    posts = Post.objects.order_by('-createdAt')[start:stop].aggregate(
-        load_post_with_offset_pipeline()
-    )
+
+    if search_type == "by_tags":
+        posts = Post.objects(tags__all=search).order_by('-createdAt')[start:stop].aggregate(
+            load_post_with_offset_pipeline()
+        )
+    else:
+        posts = Post.objects.order_by('-createdAt')[start:stop].aggregate(
+            load_post_with_offset_pipeline()
+        )
 
     return posts
 

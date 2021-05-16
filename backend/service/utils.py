@@ -28,6 +28,7 @@ def load_posts_for_user(user_id):
             "$project": {
                 "title": 1,
                 "body": 1,
+                "tags": 1,
                 "createdAt": 1,
                 "comments": {
                     "$cond": {

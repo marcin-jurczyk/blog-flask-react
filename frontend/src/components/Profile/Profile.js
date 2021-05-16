@@ -98,6 +98,7 @@ export const Profile = () => {
                                         body={post.body}
                                         author={user}
                                         comments={post.comments}
+                                        tags={post.tags}
                                         modified={post.modified}
                                         lastModifiedAt={post.lastModifiedAt.$date}
                                         type={"user"}

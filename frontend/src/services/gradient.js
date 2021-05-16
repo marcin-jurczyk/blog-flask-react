@@ -31,6 +31,23 @@ export const gradient = (uid, type = 'diagonal', opacity = 1) => {
     throw new TypeError('uid is required')
 }
 
+const tagsColors = ["magenta", "red", "volcano", "orange", "gold", "lime", "green", "cyan", "blue", "geekblue", "purple"];
+
+export function tagColor(name) {
+    let h = hash(name.tag);
+    let n = ('' + h)[1]
+    return tagsColors[n]
+}
+
+export function getTagColor(name) {
+    let n = hash(name.tag);
+    n = n +""
+    n = parseInt(n.slice(4, 7))
+    console.log(n)
+    let c = color({h: n % 360, s: 0.95, l: 0.5})
+    return c.toRgbString()
+}
+
 export function randomString(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -45,8 +62,6 @@ export function randomType() {
     const words = ["diagonal", "vertical", "horizontal", "radial"];
     return words[Math.floor(Math.random() * words.length)]
 }
-
-
 
 
 // function randomGradient(opacity) {
