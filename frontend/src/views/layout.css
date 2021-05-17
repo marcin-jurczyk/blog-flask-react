@@ -12,7 +12,6 @@
 }
 
 .bg {
-    background: url("../_images/blog-background.jpeg") no-repeat 0 0;
     background-size:cover;
     position: absolute;
     width: 100%;

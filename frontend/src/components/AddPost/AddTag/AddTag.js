@@ -1,9 +1,8 @@
 import {useContext, useEffect, useRef, useState} from "react";
 import {Tag, Input, Tooltip} from 'antd';
 import {PlusOutlined} from '@ant-design/icons';
-
-import './layout.css'
 import {TagsContext} from "../../../services/tags";
+import './layout.css'
 
 export const AddTag = props => {
 

@@ -94,7 +94,6 @@ def load_posts_with_offset(number, offset):
     query_parameters = request.args
     search_type = query_parameters.get('searchType')
     search = query_parameters.get('search').split(", ")
-    print(search)
     return Response(
         json_util.dumps(load_posts_with_offset_service(number, offset, search_type, search)),
         mimetype='application/json'

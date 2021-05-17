@@ -45,9 +45,6 @@ export const Home = () => {
             })
                 .then((response) => {
                     if (page !== 0) {
-                        if (Object.keys(response.data).length === 0) {
-                            setLoading(false)
-                        } else setLoading(true)
                         if (loading === true) {
                             let newPosts = postsRequest.posts
                             Array.prototype.push.apply(newPosts, response.data);
@@ -56,6 +53,9 @@ export const Home = () => {
                                 posts: newPosts,
                             })
                         }
+                        if (Object.keys(response.data).length < 10) {
+                            setLoading(false)
+                        } else setLoading(true)
                     }
                 })
                 .catch(errInfo => console.error(errInfo))

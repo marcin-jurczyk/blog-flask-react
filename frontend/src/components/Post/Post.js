@@ -94,7 +94,7 @@ export const Post = () => {
                         <CommentOutlined span={2} style={{color: '#bbbbbb'}}/>{' '}
                         {Object.keys(post.comments).length}
                     </Col>
-                    <Col span={3}>
+                    <Col span={4}>
                         <ClockCircleOutlined style={{color: '#bbbbbb'}}/>{' '}
                         {date.format('YYYY-MM-DD HH:mm:ss')}
                     </Col>
@@ -129,9 +129,9 @@ export const Post = () => {
         return (
             <NotLogged>
                 {content()}
-                {comments !== undefined &&
+                {comments !== undefined && comments.length !== 0 &&
                 <div className="post-container">
-                    {post.comments.length > 0 &&
+                    {comments.comments.length > 0 &&
                     <div className="comment-section">
                         <span style={{fontWeight: "bold"}}> COMMENTS </span>
                         <CommentList comments={comments.comments} actions={actions}/>
@@ -149,7 +149,7 @@ export const Post = () => {
                 <div className="post-container">
                     <div className="comment-section">
                         <span style={{fontWeight: "bold"}}> COMMENTS </span>
-                        {comments.comments.length > 0 &&
+                        {comments.length !== 0 && comments.comments.length > 0 &&
                         <CommentList comments={comments.comments} actions={actions}/>
                         }
                     </div>
@@ -175,7 +175,7 @@ export const Post = () => {
     }
 }
 
-const CommentList = ({comments, actions}) => (
+const CommentList = ({comments}) => (
     <List
         dataSource={comments}
         header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}

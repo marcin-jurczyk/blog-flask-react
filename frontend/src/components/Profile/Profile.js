@@ -7,7 +7,6 @@ import './layout.css'
 import {API} from "../../services/api";
 import {PostShort} from "../Home/PostShort/PostShort";
 import {EditTwoTone} from "@ant-design/icons";
-import Meta from "antd/es/card/Meta";
 import {ChangePassword} from "../Auth/ChangePassword/ChangePassword";
 import {ChangeUsername} from "../Auth/ChangeUsername/ChangeUsername";
 import {ChangeEmail} from "../Auth/ChangeEmail/ChangeEmail";
